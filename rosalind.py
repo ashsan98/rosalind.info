@@ -1053,7 +1053,7 @@ def factorial(n: 'int') -> 'int': # Computes the factorial of a number
 #     elif let in {"C", "G"}:
 #         CG += 1
 
-def round3dec(x): # Rounds a decimal number to 3 digits
+def round3dec(x): # Rounds a decimal number to 3 digits, but not if it is written with the e-n notation
     x_str = str(x)
     if "." not in x_str: # If it has no decimals digits, it is already rounded
         return x
@@ -2301,37 +2301,324 @@ def str2dec(s: str): # converts a string into a decimal number
 
 # Creating a Character Table
 
-file_path = "C:\\Users\\saxel\\Downloads\\rosalind_check.txt"
-with open(file_path, 'r') as file:
-    s = file.read()
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_check.txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
 
-# In the Newick format, if we picture the rooted tree as having nodes separated in horizontal lines, where the root is at height 0, and the children of nodes of height i are at height i + 1,
-# then these heights correspond to the number of opening parentheses that are unclosed
+# # In the Newick format, if we picture the rooted tree as having nodes separated in horizontal lines, where the root is at height 0, and the children of nodes of height i are at height i + 1,
+# # then these heights correspond to the number of opening parentheses that are unclosed
 
-# For example, in the sample dataset, dog and cat appear after 1 unclosed opening parenthesis, and so are at height 1; robot is at height 2 and elephant and mouse at height 3
-# We can use this height structure to keep track of what gets separated when cutting a branch of the tree
-# We save the positions after which the parentheses appear and how many of them are unclosed
+# # For example, in the sample dataset, dog and cat appear after 1 unclosed opening parenthesis, and so are at height 1; robot is at height 2 and elephant and mouse at height 3
+# # We can use this height structure to keep track of what gets separated when cutting a branch of the tree
+# # We save the positions after which the parentheses appear and how many of them are unclosed
 
-i = 0
-openings = [] # these just tells you the height of each taxon
-siblings = [] # these merge together the taxa that are siblings (since these need to have the same digit)
-curr = 0
-while i < len(s):
-    if s[i] == "(":
-        curr += 1
-    elif s[i] == ")":
-        curr -= 1
-    elif i > 0 and s[i] not in {"(", ")", ",", ";"} and s[i - 1] in {"(", ")", ",", ";"}:
-        openings.append([i, curr])
-        if i == 1 or s[i - 2] in {"(", ")", ",", ";"}:
-            siblings.append([i, curr])
-    i += 1
+# i = 0
+# openings = [] # these just tells you the height of each taxon
+# siblings = [] # these merge together the taxa that are siblings (since these need to have the same digit)
+# curr = 0
+# while i < len(s):
+#     if s[i] == "(":
+#         curr += 1
+#     elif s[i] == ")":
+#         curr -= 1
+#     elif i > 0 and s[i] not in {"(", ")", ",", ";"} and s[i - 1] in {"(", ")", ",", ";"}:
+#         openings.append([i, curr])
+#         if i == 1 or s[i - 2] in {"(", ")", ",", ";"}:
+#             siblings.append([i, curr])
+#     i += 1
 
-n = len(openings) # the number of taxa
-print(openings)
-print(siblings)
-for option in itertools.product({0, 1}, repeat = n):
-    k = sum(option)
-    # if k > 1 and k < n - 1:
-        # still to be done
-        # do not forget to order the taxa lexicographically when printing!
+# n = len(openings) # the number of taxa
+# print(openings)
+# print(siblings)
+# for option in itertools.product({0, 1}, repeat = len(siblings)):
+#     option = list(option)
+#     works = True
+#     i = 0
+#     while i < len(option):
+#         # this is very inefficient, since it checks each option and does not use this knowledge to discard other options with the same problems
+#         if i > 0 and option[i] == 1 and option[i - 1] == 0 and siblings[i][1] < siblings[i - 1][1]:
+#             works = False
+#         if i < len(option) - 1 and option[i] == 1 and option[i + 1] == 0 and siblings[i][1] < siblings[i + 1][1]:
+#             works = False
+#         if i > 0 and option[i] == 0 and option[i - 1] == 1 and siblings[i][1] > siblings[i - 1][1]:
+#             works = False
+#         if i < len(option) - 1 and option[i] == 0 and option[i + 1] == 1 and siblings[i][1] > siblings[i + 1][1]:
+#             works = False
+#         i += 1
+#     if works == True:
+#         # Print according to sibling repetition (same value for all siblings since repeat = len(siblings). but we still need to output it as many times as siblings there are)
+#         j = 0
+#         l = 0
+#         t = []
+#         while j < len(openings):
+#             if openings[j] != siblings[l]:
+#                 l -= 1
+#             t.append(option[l])
+#             l += 1
+#             j += 1
+#         if sum(t) > 1 and sum(t) < n - 1:
+#             print(option)
+#             for c in t:
+#                 print(c, end="")
+#             print("")
+
+# # This is not correct; probably best is to start again from the beginning
+
+
+
+
+
+# Constructing a De Brujin Graph
+
+# # We first construct the reverse complement of the strings, ignoring them if they are repetitions of strings we already had
+# # Then, we divide them into p[:-1] and p[1:], which represent the nodes delimiting each edge, and order them lexicographically for the adjacency list
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_dbru.txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
+
+# s = s.split()
+# s = set(s)
+# for p in list(s):
+#     s.add(dna_revcomp(p))
+
+# adj = []
+# for p in list(s):
+#     adj.append("(" + p[:-1] + ", " + p[1:] + ")")
+# adj.sort()
+# with open("output.txt", "a") as f:     
+#     for edge in adj:
+#         print(edge, file=f)
+
+
+
+
+# Inferring Peptide from Full Spectrum
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_full.txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
+
+# s = s.split()
+# for i in range(len(s)):
+#     s[i] = str2dec(s[i])
+
+# s.sort() # this makes the last value be the parent mass (since it is the largest) and because each prefix comes with its complementary suffix, the mass of s[i] and s[-2 - i] have to add up to L and corresponding to complementary b- and y-ions, respectively
+# L = s[-1]
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_monoisot.txt"
+# with open(file_path, "r") as file:
+#     r = file.read()
+
+# r = r.split()
+# isotopes = []
+# masses = []
+# for i in range(len(r) // 2):
+#     isotopes.append(r[2 * i])
+#     masses.append(str2dec(r[2 * i + 1]))
+
+# If we compute the difference of masses from a prefix to the previous one, we know the mass of the fragment between them; this fragment could be a whole aminoacid: then we add it to our protein string; or it could be a part of an aminoacid, in which case we have to add that mass to subsequent masses until we reached a whole aminoacid
+
+# protein = ""
+# temp = 0
+# for i in range(len(s) - 3): # I do not actually know exactly why it should go until len(s) - 4, but it works
+#     temp += s[i + 1] - s[i]
+#     j = 0
+#     while j < len(masses) and abs(temp - masses[j]) > 0.00001:
+#         j += 1
+#     if j != len(masses):
+#         protein += isotopes[j]
+#         temp = 0
+#     i += 1
+# print(protein)
+
+
+
+# Independent Segregation of Chromosomes
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_indc (3).txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
+
+# s = s.split()
+# n = str2int(s[0])
+
+# from math import log # the natural logarithm
+
+# # The probability of sharing at least k chromosomes is 1 - the probability of sharing less than k chromosomes, which in turn is the sum of the probabilities of sharing exactly l chromosomes for 0 <= l < k. This is given by the binomial distribution over(2 * n, l) * ((1 / 2) ** (2 * n))
+
+# factor = (1 / 2) ** (2 * n)
+# temp = 0
+# A = []
+# k = 2 * n
+# while k > 0:
+#     temp += 1 * over(2 * n, k) * factor # probability of sharing at least k chromosomes (we add the probability of sharing exactly k chromosomes each time)
+#     A.append((log(temp)) / log(10))
+#     k -= 1
+
+# with open("output.txt", "a") as f:
+#     i = 2 * n - 1
+#     while i >= 0:
+#         print(A[i] if A[i] < -0.0001 else 0.0, file=f) # we do it this way because the solution does not accept entries with decimal numbers in format _._e-_
+#         i -= 1
+
+# # The reverse ordering we do (in printing with respect to constructing the array A) is a consequence of the fact that if we calculate the probability of at least k as 1 - the probability of less than k, then the precision of the computer fails us, since we get very small probabilities at some point
+
+
+
+
+
+# Finding Disjoint Motifs in a Gene
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_itwv.txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
+
+# s = s.split()
+# u = s.pop(0)
+
+# # Checking whether a string is made from interleaving two strings is a "known" DP-algorithm
+
+# def interwoven(s: str, t: str, u: str, i: int, j: int, memo: list[list[int]]): # tells you if the strings s and t can be interwoven in u as disjoint subsequence-partitions (meaning they use up all bases) of a substring in u
+#     k = i + j
+#     m = len(s)
+#     n = len(t)
+#     if i == m and j == n and k == len(u):
+#         return True
+#     if memo[i][j] != -1:
+#         return memo[i][j] == 1
+#     add_i = False
+#     if i < m and s[i] == u[k]:
+#         add_i = interwoven(s, t, u, i + 1, j, memo)
+#     add_j = False
+#     if j < n and t[j] == u[k]:
+#         add_j = interwoven(s, t, u, i, j + 1, memo)
+#     memo[i][j] = 1 if add_i or add_j else 0
+#     return add_i or add_j
+
+# M = [[0 for _ in range(len(s))] for _ in range(len(s))]
+# for i in range(len(s)):
+#     for j in range(len(s)):
+#         m = len(s[i])
+#         n = len(s[j])
+#         k = 0
+#         while M[i][j] == 0 and k < len(u) - m - n + 1:
+#             v = u[k: k + m + n]
+#             memo = [[-1 for _ in range(n + 1)] for _ in range(m + 1)]
+#             if interwoven(s[i], s[j], v, 0, 0, memo):
+#                 M[i][j] = 1
+#             k += 1
+            
+# # we could save time using that the matrix M has to be symmetric, but we keep it this way as a measure of security that we computed things properly
+# for i in range(len(M)):
+#     for j in range(len(M[0])):
+#         if j < len(M[0]) - 1:
+#             print(M[i][j], end= " ")
+#         else:
+#             print(M[i][j])
+
+
+
+
+# Counting Disease Carriers
+
+# # We denote P(dr) the probability of an individual being heterozygous and P(rr) homozygous recessive.
+# # An individual can be homozygous recessive if:
+# # - Both of them are too
+# # - One of them is and the other is heterozygous and passed the recessive gene
+# # - Both are heterozygous and passed the recessive gene
+# # Thus: P(rr) = P(rr) ** 2 + P(rr) * P(dr) * 1/2 + (P(dr) ** 2) * 1/4
+# # This is a second order equation in P(dr) with positive solution -P(rr) + 2 * sqrt(P(rr))
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_afrq.txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
+
+# s = s.split()
+# from math import sqrt
+# for i in range(len(s)):
+#     temp = str2dec(s[i])
+#     print(-temp + 2 * sqrt(temp), end=" ")
+
+
+
+
+
+# Finding the Longest Multiple Repeat
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_lrep.txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
+
+# s = s.split()
+# t = s[0][:-1]
+# k = str2int(s[1])
+
+
+# starts = []
+# ends = []
+# positions = []
+# lengths = []
+# children = [0 for _ in range((len(s) - 2) // 4 + 1)] # the ith position stores the number of children of the (i + 1)-th node
+# dist2root = [0 for _ in range((len(s) - 2) // 4 + 1)] # the ith position stores the distance from the (i + 1)-th node to the root (it is 0 for node1, which corresponds to dist2root[0])
+
+# i = 2
+# while i < len(s):
+#     starts.append(s[i])
+#     ends.append(s[i + 1])
+#     positions.append(str2int(s[i + 2]))
+#     lengths.append(str2int(s[i + 3]))
+#     dist2root[str2int(s[i + 1][4:]) - 1] += str2int(s[i + 3]) + dist2root[str2int(s[i][4:]) - 1]
+#     i += 4
+
+# i = len(s) - 4
+# while i > 1:
+#     children[str2int(s[i][4:]) - 1] += max(children[str2int(s[i + 1][4:]) - 1], 1) # with children[i] we actually want to count the leaves that appear after the (i + 1)-th node; if the node has a child ending with j > 0 leaves, then the parent also has at least these j leaves; when j = 0, then the child is a leaf, so we add it instead
+#     i -= 4
+# # the leaves now appear with value 0 in children, but they actually represent a substring that appears once, so we update their 0's to 1's in children
+# for i in range(len(children)):
+#     if children[i] == 0:
+#         children[i] += 1
+
+# # If we look for the longest substring that occurs at least k times in s, we are looking for a node which has at least k children whose distance to the root is maximal
+# max_dist = 0
+# best_node = 0
+
+# for i in range(len(children)):
+#     if children[i] >= k and dist2root[i] > max_dist:
+#         max_dist = dist2root[i]
+#         best_node = i + 1
+# # now we look for the string it represents (this could definitely have been stored in one of the previous passes for efficiency!)
+# # for that, we look for the edge ending in the desired node; we know the position of the character corresponding to it and we add it its length (-1 because of 0-indexing)
+# # that way, we have computed the position of the last character of the longest such string, and because we also know its length (max_dist), we can determine it
+# i = 0
+# while ends[i] != "node" + str(best_node):
+#     i += 1
+# last_char = positions[i] + lengths[i] - 1
+# print(t[last_char - max_dist: last_char])
+
+
+
+
+
+
+# Genome Assembly with Perfect Coverage
+
+# # Having perfect coverage means for every string there is another one such that if we remove the last character of the original string and the first of the new one, they match
+# # So to construct the cyclic superstring, we just need to start with one k-mer, remove its first character, see which other k-mer starts that way and add its last character, and repeat the process until all k-mers are exhausted
+# # This is probably not the most efficient way, however
+
+# file_path = "C:\\Users\\saxel\\Downloads\\rosalind_pcov.txt"
+# with open(file_path, 'r') as file:
+#     s = file.read()
+
+# s = s.split()
+# k = len(s[0])
+# cycle = s.pop(0)
+# while len(s) > k - 1: # at some point we start cycling back to the start of our string and we assume there is a good solution to the problem, so we do not need to check whether everything fits
+#     j = 0
+#     while cycle[-k + 1:] != s[j][:-1]:
+#         j += 1
+#     cycle += s[j][-1]
+#     s.pop(j)
+# print(cycle)
